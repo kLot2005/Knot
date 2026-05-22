@@ -1,0 +1,123 @@
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 32px;
+}
+
+.card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.cardHeader h3 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 10px;
+    background: var(--bg-3);
+    color: var(--text-3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.desc {
+    font-size: 14px;
+    color: var(--text-3);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.inputGroup label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+}
+
+.input {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    color: white;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    outline: none;
+}
+
+.input:focus {
+    border-color: var(--accent);
+}
+
+.presets {
+    display: flex;
+    gap: 8px;
+}
+
+.presetBtn {
+    background: var(--bg-3);
+    border: none;
+    color: var(--text-2);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.presetBtn:hover {
+    background: var(--bg-4);
+    color: var(--text-1);
+}
+
+.fullWidth {
+    grid-column: 1 / -1;
+}
+
+.saveCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.saveActions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.saveBtn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.msg {
+    font-size: 14px;
+    color: #22c55e;
+}
+
+.msg.err {
+    color: #ef4444;
+}

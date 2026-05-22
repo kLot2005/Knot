@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knot — News Intelligence</title>
+    <meta name="description" content="Real-time news aggregation and clustering dashboard">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <div class="logo">
+            <span class="logo-icon">⬡</span>
+            <span class="logo-text">Knot</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="nav-item active" data-page="overview" onclick="showPage('overview', this)">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+                    </svg>
+                    <span>Обзор</span>
+                </a></li>
+            <li><a href="#" class="nav-item" data-page="clusters" onclick="showPage('clusters', this)">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+                    </svg>
+                    <span>Кластеры</span>
+                </a></li>
+            <li><a href="#" class="nav-item" data-page="feed" onclick="showPage('feed', this)">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z" />
+                    </svg>
+                    <span>Лента</span>
+                </a></li>
+            <li><a href="#" class="nav-item" data-page="channels" onclick="showPage('channels', this)">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"
+                            transform="rotate(90 12 12)" />
+                    </svg>
+                    <span>Каналы</span>
+                </a></li>
+            <li><a href="#" class="nav-item" data-page="settings" onclick="showPage('settings', this)">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+                    </svg>
+                    <span>Настройки</span>
+                </a></li>
+        </ul>
+        <div class="sidebar-status">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Connecting...</span>
+        </div>
+    </nav>
+
+    <main class="main-content">
+
+        <!-- ── OVERVIEW PAGE ─────────────────── -->
+        <div class="page active" id="page-overview">
+            <div class="page-header">
+                <h1>Обзор</h1>
+                <button class="btn-primary" onclick="refreshAll()">⟳ Обновить</button>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📰</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="s-totalNews">—</span>
+                        <span class="stat-label">Всего новостей</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🧩</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="s-totalClusters">—</span>
+                        <span class="stat-label">Кластеров</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔍</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="s-unclustered">—</span>
+                        <span class="stat-label">Не в кластере</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="s-last24h">—</span>
+                        <span class="stat-label">За 24 часа</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Очереди</h2>
+                        <span class="badge" id="queueRefreshTime"></span>
+                    </div>
+                    <div class="queue-list" id="queueList">
+                        <div class="queue-row">
+                            <span class="queue-name">Векторизация</span>
+                            <span class="queue-vals">
+                                <span class="q-active" id="q-emb-active">—</span> active
+                                / <span class="q-wait" id="q-emb-wait">—</span> wait
+                            </span>
+                        </div>
+                        <div class="queue-row">
+                            <span class="queue-name">Кластеризация</span>
+                            <span class="queue-vals">
+                                <span class="q-active" id="q-cl-active">—</span> active
+                                / <span class="q-wait" id="q-cl-wait">—</span> wait
+                            </span>
+                        </div>
+                    </div>
+                    <button class="btn-outline" style="margin-top:1rem" onclick="triggerCluster()">▶ Запустить
+                        кластеризацию</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Топ каналов</h2>
+                    </div>
+                    <div id="channelChart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── CLUSTERS PAGE ─────────────────── -->
+        <div class="page" id="page-clusters">
+            <div class="page-header">
+                <h1>Кластеры</h1>
+                <button class="btn-primary" onclick="loadClusters()">⟳ Обновить</button>
+            </div>
+            <div class="cluster-grid" id="clusterGrid">
+                <div class="loading">Загрузка...</div>
+            </div>
+        </div>
+
+        <!-- ── FEED PAGE ─────────────────────── -->
+        <div class="page" id="page-feed">
+            <div class="page-header">
+                <h1>Лента новостей</h1>
+                <button class="btn-primary" onclick="loadFeed()">⟳ Обновить</button>
+            </div>
+            <div class="feed-list" id="feedList">
+                <div class="loading">Загрузка...</div>
+            </div>
+        </div>
+
+        <!-- ── CHANNELS PAGE ─────────────────── -->
+        <div class="page" id="page-channels">
+            <div class="page-header">
+                <h1>Управление каналами</h1>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>Добавить канал</h2>
+                </div>
+                <div class="setting-row" style="margin-top:1rem;">
+                    <input type="text" id="newChannelInput" placeholder="kaztag_tg или @kaztag_tg"
+                        class="setting-input">
+                    <button class="btn-primary" onclick="addChannel()">Добавить</button>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:1.5rem;">
+                <div class="card-header">
+                    <h2>Отслеживаемые каналы</h2>
+                </div>
+                <div class="channel-list" id="channelListTable">
+                    <div class="loading">Загрузка...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SETTINGS PAGE ─────────────────── -->
+        <div class="page" id="page-settings">
+            <div class="page-header">
+                <h1>Настройки бота</h1>
+            </div>
+
+            <div class="settings-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Расписание кластеризации</h2>
+                    </div>
+                    <p class="setting-desc">Cron-паттерн для автоматического запуска кластеризации. Изменения вступят в
+                        силу после перезапуска.</p>
+                    <div class="setting-row">
+                        <label>Cron-паттерн</label>
+                        <input type="text" id="set-clusterCron" placeholder="*/5 * * * *" class="setting-input">
+                    </div>
+                    <div class="cron-presets">
+                        <button class="preset-btn" onclick="setCron('*/1 * * * *')">1 мин</button>
+                        <button class="preset-btn" onclick="setCron('*/5 * * * *')">5 мин</button>
+                        <button class="preset-btn" onclick="setCron('*/15 * * * *')">15 мин</button>
+                        <button class="preset-btn" onclick="setCron('*/30 * * * *')">30 мин</button>
+                        <button class="preset-btn" onclick="setCron('0 * * * *')">1 час</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Интервал опроса каналов</h2>
+                    </div>
+                    <p class="setting-desc">Как часто (в секундах) проверять каналы на наличие новых постов через
+                        polling.</p>
+                    <div class="setting-row">
+                        <label>Интервал (секунды)</label>
+                        <input type="number" id="set-pollInterval" placeholder="30" min="10" max="3600"
+                            class="setting-input">
+                    </div>
+                    <div class="cron-presets">
+                        <button class="preset-btn" onclick="setPoll(15)">15с</button>
+                        <button class="preset-btn" onclick="setPoll(30)">30с</button>
+                        <button class="preset-btn" onclick="setPoll(60)">1 мин</button>
+                        <button class="preset-btn" onclick="setPoll(120)">2 мин</button>
+                    </div>
+                </div>
+
+                <div class="card full-width">
+                    <div class="save-row">
+                        <div>
+                            <h2>Сохранить настройки</h2>
+                            <p class="setting-desc">После сохранения перезапустите бот для применения изменений.</p>
+                        </div>
+                        <button class="btn-primary" onclick="saveSettings()">Сохранить</button>
+                    </div>
+                    <div id="settingsMsg" class="settings-msg"></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal -->
+    <div id="textModal" class="modal" onclick="if(event.target===this)closeModal()">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span class="modal-channel" id="modalChannel"></span>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalText"></div>
+            <div class="modal-footer" id="modalDate"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

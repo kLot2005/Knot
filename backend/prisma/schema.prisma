@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  extensions = [vector]
+}
+
+model NewsItem {
+  id              Int          @id @default(autoincrement())
+  external_id     BigInt
+  channel_id      String
+  raw_text        String
+  normalized_text String
+  message_hash    String       @unique
+  created_at      DateTime     @default(now())
+  embedding       Unsupported("vector(1024)")?
+  media           String[]     // Массив file_id или ссылок
+  cluster_id      Int?
+  cluster         NewsCluster? @relation(fields: [cluster_id], references: [id])
+
+  @@index([message_hash])
+  @@index([cluster_id])
+  @@map("news_items")
+}
+
+model NewsCluster {
+  id           Int             @id @default(autoincrement())
+  created_at   DateTime        @default(now())
+  updated_at   DateTime        @default(now()) @updatedAt
+  is_processed Boolean         @default(false)
+  
+  items        NewsItem[]
+  generated    GeneratedPost?
+
+  @@map("news_clusters")
+}
+
+model GeneratedPost {
+  id         Int         @id @default(autoincrement())
+  cluster_id Int         @unique
+  cluster    NewsCluster @relation(fields: [cluster_id], references: [id])
+  text       String
+  telegram_id String?    // ID сообщения в боте
+  created_at DateTime    @default(now())
+
+  @@map("generated_posts")
+}
+
+model Subscriber {
+  id         Int      @id @default(autoincrement())
+  telegram_id String   @unique
+  created_at DateTime @default(now())
+
+  @@map("subscribers")
+}
+
+model SourceChannel {
+  id         Int      @id @default(autoincrement())
+  username   String   @unique
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+
+  @@map("source_channels")
+}

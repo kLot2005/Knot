@@ -2,6 +2,7 @@ import { Worker, Job } from 'bullmq';
 import { redis } from './redis';
 import { prisma } from './db';
 import { clusterize } from './clusterizer';
+import { synthesizeCluster } from './generator';
 
 // Ollama API configuration
 const OLLAMA_URL = 'http://localhost:11434/api';
@@ -14,7 +15,7 @@ export const embeddingWorker = new Worker('embedding_queue', async (job: Job) =>
 
     // Если новости нет или она слишком короткая (мусор), пропускаем
     if (!item) return;
-    if (item.normalized_text.length < 25) {
+    if (item.normalized_text.length < 40) {
         console.log(`[Worker] Skipping too short text for item ${id}`);
         return;
     }
@@ -70,5 +71,15 @@ export const clusterWorker = new Worker('cluster_queue', async (job: Job) => {
     await clusterize();
     console.log('[Worker] Clustering task completed.');
 }, { connection: redis });
+
+// --- SYNTHESIS WORKER ---
+export const synthesisWorker = new Worker('synthesis_queue', async (job: Job) => {
+    const { clusterId } = job.data;
+    console.log(`[Worker] Starting synthesis for cluster ${clusterId}...`);
+    await synthesizeCluster(clusterId);
+}, {
+    connection: redis,
+    concurrency: 1
+});
 
 
