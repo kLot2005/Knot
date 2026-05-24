@@ -34,5 +34,18 @@ async function main() {
 }
 
 import { startDashboard } from './dashboard';
+
+// Глобальные обработчики для стабильности
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('[Fatal] Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('[Fatal] Uncaught Exception:', err);
+});
+
 startDashboard();
-main().catch(console.error);
+main().catch(err => {
+    console.error('[Main] Top-level error:', err);
+    process.exit(1);
+});
